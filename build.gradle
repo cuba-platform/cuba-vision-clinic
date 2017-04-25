@@ -1,6 +1,6 @@
 
 buildscript {
-    ext.cubaVersion = '6.3.5'
+    ext.cubaVersion = '6.5.0'
     repositories {
         maven {
             url 'https://repo.cuba-platform.com/content/groups/work'
@@ -10,13 +10,11 @@ buildscript {
             }
         }
         
+        
+        
     }
     dependencies {
         classpath "com.haulmont.gradle:cuba-plugin:$cubaVersion"
-
-        classpath "com.haulmont.cuba:cuba-global:$cubaVersion"
-
-        
     }
 }
 
@@ -41,11 +39,17 @@ cuba {
         dir = "$project.rootDir/build/tomcat"
     }
     ide {
+         
         vcs = 'Git'
     }
 }
 
-def mssql = 'net.sourceforge.jtds:jtds:1.2.4'
+dependencies {
+    appComponent("com.haulmont.cuba:cuba-global:$cubaVersion")
+
+}
+
+def hsql = 'org.hsqldb:hsqldb:2.2.9'
 
 configure([globalModule, coreModule, guiModule, webModule]) {
     apply(plugin: 'java')
@@ -69,7 +73,7 @@ configure([globalModule, coreModule, guiModule, webModule]) {
 
 configure(globalModule) {
     task enhance(type: CubaEnhancing)
-    
+
     
 }
 
@@ -83,16 +87,18 @@ configure(coreModule) {
     dependencies {
         compile(globalModule)
         provided(servletApi)
-        jdbc(mssql)
-        testRuntime(mssql)
+        jdbc(hsql)
+        testRuntime(hsql)
 
     }
 
-    task cleanConf(description: 'Cleans up conf directory') << {
-        def dir = new File(cuba.tomcat.dir, '/conf/app-core')
-        if (dir.isDirectory()) {
-            ant.delete(includeemptydirs: true) {
-                fileset(dir: dir, includes: '**/*', excludes: 'local.app.properties')
+    task cleanConf(description: 'Cleans up conf directory') {
+        doLast {
+            def dir = new File(cuba.tomcat.dir, '/conf/app-core')
+            if (dir.isDirectory()) {
+                ant.delete(includeemptydirs: true) {
+                    fileset(dir: dir, includes: '**/*', excludes: 'local.app.properties')
+                }
             }
         }
     }
@@ -103,23 +109,19 @@ configure(coreModule) {
     }
 
     task createDb(dependsOn: assembleDbScripts, description: 'Creates local database', type: CubaDbCreation) {
-        connectionParams = ';instance=SQLEXPRESS'
-        dbmsVersion = '2012'
-        dbms = 'mssql'
-        host = 'shiryaeva'
+        dbms = 'hsql'
+        host = 'localhost'
         dbName = 'visionclinic'
         dbUser = 'sa'
-        dbPassword = '1'
+        dbPassword = ''
     }
 
     task updateDb(dependsOn: assembleDbScripts, description: 'Updates local database', type: CubaDbUpdate) {
-        connectionParams = ';instance=SQLEXPRESS'
-        dbmsVersion = '2012'
-        dbms = 'mssql'
-        host = 'shiryaeva'
+        dbms = 'hsql'
+        host = 'localhost'
         dbName = 'visionclinic'
         dbUser = 'sa'
-        dbPassword = '1'
+        dbPassword = ''
     }
 }
 
@@ -168,11 +170,13 @@ configure(webModule) {
     }
     deployConf.dependsOn clearMessagesCache
 
-    task cleanConf(description: 'Cleans up conf directory') << {
-        def dir = new File(cuba.tomcat.dir, '/conf/app')
-        if (dir.isDirectory()) {
-            ant.delete(includeemptydirs: true) {
-                fileset(dir: dir, includes: '**/*', excludes: 'local.app.properties')
+    task cleanConf(description: 'Cleans up conf directory') {
+        doLast {
+            def dir = new File(cuba.tomcat.dir, '/conf/app')
+            if (dir.isDirectory()) {
+                ant.delete(includeemptydirs: true) {
+                    fileset(dir: dir, includes: '**/*', excludes: 'local.app.properties')
+                }
             }
         }
     }
@@ -186,23 +190,26 @@ configure(webModule) {
 
 
 
+
 task undeploy(type: Delete, dependsOn: ':app-web:cleanConf') {
     delete("$cuba.tomcat.dir/shared")
     delete("$cuba.tomcat.dir/webapps/app-core")
     delete("$cuba.tomcat.dir/webapps/app")
 }
 
-task restart(dependsOn: ['stop', ':app-core:deploy', ':app-web:deploy'], description: 'Redeploys applications and restarts local Tomcat') << {
-    ant.waitfor(maxwait: 6, maxwaitunit: 'second', checkevery: 2, checkeveryunit: 'second') {
-        not {
-            socket(server: 'localhost', port: '8787')
+task restart(dependsOn: ['stop', ':app-core:deploy', ':app-web:deploy'], description: 'Redeploys applications and restarts local Tomcat') {
+    doLast {
+        ant.waitfor(maxwait: 6, maxwaitunit: 'second', checkevery: 2, checkeveryunit: 'second') {
+            not {
+                socket(server: 'localhost', port: '8787')
+            }
         }
+        start.execute()
     }
-    start.execute()
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.13'
+    gradleVersion = '3.1'
 }
 
 apply from: 'extra.gradle'
