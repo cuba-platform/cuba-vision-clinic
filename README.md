@@ -4,8 +4,8 @@ This project shows how your LightSwitch application could look after migration t
 
 Migration is done automatically by the reverse-engineering functionality, provided by the CUBA Studio.
 
-<img src="https://github.com/aleksey-stukalov/cuba-vision-clinic/blob/master/screenshots/LS-products-screen.png" alt="Product screen in LightSwitch app" height="250px">
-<img src="https://github.com/aleksey-stukalov/cuba-vision-clinic/blob/master/screenshots/CUBA-products-screen.png" alt="Product screen in CUBA app" height="250px">
+<img src="https://github.com/cuba-platform/cuba-vision-clinic/blob/master/screenshots/LS-products-screen.png" alt="Product screen in LightSwitch app" height="250px">
+<img src="https://github.com/cuba-platform/cuba-vision-clinic/blob/master/screenshots/CUBA-products-screen.png" alt="Product screen in CUBA app" height="250px">
 
 Find technical aspects of how to launch the application [here](https://github.com/cuba-platform/cuba-vision-clinic/wiki).
 
