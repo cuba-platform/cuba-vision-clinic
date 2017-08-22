@@ -27,9 +27,6 @@ import javax.inject.Named;
 
 public class InvoiceDetailsEdit extends AbstractEditor<InvoiceDetails> {
 
-    @Inject
-    private DataSupplier dataSupplier;
-
     @Named("fieldGroup.productProductid")
     private PickerField productProductidField;
 
@@ -44,7 +41,6 @@ public class InvoiceDetailsEdit extends AbstractEditor<InvoiceDetails> {
         productProductidField.addValueChangeListener(e -> {
             Product selectedProduct = getItem().getProductProductid();
             if (selectedProduct != null) {
-                selectedProduct = dataSupplier.reload(selectedProduct, "product-current-price-view");
                 getItem().setUnitPrice(selectedProduct.getCurrentPrice());
             } else
                 getItem().setUnitPrice(null);

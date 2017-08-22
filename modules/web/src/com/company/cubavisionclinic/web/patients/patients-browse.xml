@@ -18,11 +18,11 @@
 <window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
         caption="msg://browseCaption"
         class="com.company.cubavisionclinic.web.patients.PatientsBrowse"
-        focusComponent="patientsesTable"
-        lookupComponent="patientsesTable"
+        focusComponent="patientsTable"
+        lookupComponent="patientsTable"
         messagesPack="com.company.cubavisionclinic.web.patients">
     <dsContext>
-        <collectionDatasource id="patientsesDs"
+        <collectionDatasource id="patientsDs"
                               class="com.company.cubavisionclinic.entity.Patients"
                               view="_local">
             <query>
@@ -32,14 +32,14 @@
     </dsContext>
     <dialogMode height="600"
                 width="800"/>
-    <layout expand="patientsesTable"
+    <layout expand="patientsTable"
             spacing="true">
         <filter id="filter"
-                applyTo="patientsesTable"
-                datasource="patientsesDs">
+                applyTo="patientsTable"
+                datasource="patientsDs">
             <properties include=".*"/>
         </filter>
-        <table id="patientsesTable"
+        <table id="patientsTable"
                width="100%">
             <actions>
                 <action id="create"/>
@@ -58,16 +58,16 @@
                 <column id="email"/>
                 <column id="policyNumber"/>
             </columns>
-            <rows datasource="patientsesDs"/>
+            <rows datasource="patientsDs"/>
             <rowsCount/>
             <buttonsPanel id="buttonsPanel"
                           alwaysVisible="true">
                 <button id="createBtn"
-                        action="patientsesTable.create"/>
+                        action="patientsTable.create"/>
                 <button id="editBtn"
-                        action="patientsesTable.edit"/>
+                        action="patientsTable.edit"/>
                 <button id="removeBtn"
-                        action="patientsesTable.remove"/>
+                        action="patientsTable.remove"/>
             </buttonsPanel>
         </table>
     </layout>

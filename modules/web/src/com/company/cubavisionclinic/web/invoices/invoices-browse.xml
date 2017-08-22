@@ -18,17 +18,17 @@
 <window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
         caption="msg://browseCaption"
         class="com.company.cubavisionclinic.web.invoices.InvoicesBrowse"
-        focusComponent="invoicesesTable"
-        lookupComponent="invoicesesTable"
+        focusComponent="invoicesTable"
+        lookupComponent="invoicesTable"
         messagesPack="com.company.cubavisionclinic.web.invoices">
     <dsContext>
-        <datasource id="invoicesDs"
+        <datasource id="invoiceDs"
                     class="com.company.cubavisionclinic.entity.Invoices"
                     view="invoices-edit-view">
             <collectionDatasource id="detailsDs"
                                   property="details"/>
         </datasource>
-        <collectionDatasource id="invoicesesDs"
+        <collectionDatasource id="invoicesDs"
                               class="com.company.cubavisionclinic.entity.Invoices"
                               view="invoices-browser-view">
             <query>
@@ -56,16 +56,16 @@
                reversePosition="true"
                width="100%">
             <vbox id="lookupBox"
-                  expand="invoicesesTable"
+                  expand="invoicesTable"
                   height="100%"
                   margin="false,true,false,false"
                   spacing="true">
                 <filter id="filter"
-                        applyTo="invoicesesTable"
-                        datasource="invoicesesDs">
+                        applyTo="invoicesTable"
+                        datasource="invoicesDs">
                     <properties include=".*"/>
                 </filter>
-                <table id="invoicesesTable"
+                <table id="invoicesTable"
                        width="100%">
                     <actions>
                         <action id="create"/>
@@ -89,18 +89,18 @@
                             <formatter class="com.company.cubavisionclinic.web.formatters.CurrencyFormatter"/>
                         </column>
                     </columns>
-                    <rows datasource="invoicesesDs"/>
+                    <rows datasource="invoicesDs"/>
                     <rowsCount/>
                     <buttonsPanel id="buttonsPanel"
                                   alwaysVisible="true">
                         <button id="createBtn"
-                                action="invoicesesTable.create"/>
+                                action="invoicesTable.create"/>
                         <button id="editBtn"
-                                action="invoicesesTable.edit"/>
+                                action="invoicesTable.edit"/>
                         <button id="removeBtn"
-                                action="invoicesesTable.remove"/>
+                                action="invoicesTable.remove"/>
                         <button id="excelBtn"
-                                action="invoicesesTable.excel"/>
+                                action="invoicesTable.excel"/>
                     </buttonsPanel>
                 </table>
             </vbox>
@@ -116,16 +116,16 @@
                              caption="msg://mainTab"
                              margin="true">
                             <fieldGroup id="fieldGroup"
-                                        datasource="invoicesDs">
+                                        datasource="invoiceDs">
                                 <column width="250px">
-                                    <field id="invoiceDate"/>
-                                    <field id="invoiceDue"/>
-                                    <field id="invoiceStatus"/>
-                                    <field id="shipDate"/>
-                                    <field id="invoicePatient"/>
-                                    <field id="subTotal"/>
-                                    <field id="tax"/>
-                                    <field id="total"/>
+                                    <field property="invoiceDate"/>
+                                    <field property="invoiceDue"/>
+                                    <field property="invoiceStatus"/>
+                                    <field property="shipDate"/>
+                                    <field property="invoicePatient"/>
+                                    <field property="subTotal"/>
+                                    <field property="tax"/>
+                                    <field property="total"/>
                                 </column>
                             </fieldGroup>
                         </tab>

@@ -27,7 +27,7 @@
                     view="InvoiceDetails-screen-view"/>
         <collectionDatasource id="productProductidsDs"
                               class="com.company.cubavisionclinic.entity.Product"
-                              view="_minimal">
+                              view="product-current-price-view">
             <query>
                 <![CDATA[select e from cubavisionclinic$Product e]]>
             </query>
@@ -40,10 +40,10 @@
         <fieldGroup id="fieldGroup"
                     datasource="invoiceDetailsDs">
             <column width="250px">
-                <field id="productProductid"
+                <field property="productProductid"
                        optionsDatasource="productProductidsDs"/>
-                <field id="quantity"/>
-                <field id="unitPrice"/>
+                <field property="quantity"/>
+                <field property="unitPrice"/>
             </column>
         </fieldGroup>
         <frame id="windowActions"

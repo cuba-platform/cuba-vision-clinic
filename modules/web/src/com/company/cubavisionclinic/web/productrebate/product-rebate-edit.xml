@@ -33,10 +33,10 @@
         <fieldGroup id="fieldGroup"
                     datasource="productRebateDs">
             <column width="250px">
-                <field id="productID"/>
-                <field id="rebateStart"/>
-                <field id="rebateEnd"/>
-                <field id="rebate"/>
+                <field property="productID"/>
+                <field property="rebateStart"/>
+                <field property="rebateEnd"/>
+                <field property="rebate"/>
             </column>
         </fieldGroup>
         <frame id="windowActions"

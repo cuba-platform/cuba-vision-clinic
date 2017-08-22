@@ -14,7 +14,6 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
 <views xmlns="http://schemas.haulmont.com/cuba/view.xsd">
     <view class="com.company.cubavisionclinic.entity.Appointments"
           extends="_local"
@@ -72,5 +71,6 @@
         <property name="msrp"/>
         <property name="rebates"
                   view="_local"/>
+        <property name="productName"/>
     </view>
 </views>

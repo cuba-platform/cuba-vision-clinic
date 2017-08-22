@@ -37,13 +37,13 @@ import com.haulmont.cuba.core.entity.IdProxy;
 public class InvoicesBrowse extends AbstractLookup {
 
     @Inject
-    private CollectionDatasource<Invoices, IdProxy> invoicesesDs;
+    private CollectionDatasource<Invoices, IdProxy<Long>> invoicesDs;
 
     @Inject
-    private Datasource<Invoices> invoicesDs;
+    private Datasource<Invoices> invoiceDs;
 
     @Inject
-    private Table<Invoices> invoicesesTable;
+    private Table<Invoices> invoicesTable;
 
     @Inject
     private BoxLayout lookupBox;
@@ -57,8 +57,8 @@ public class InvoicesBrowse extends AbstractLookup {
     @Inject
     private TabSheet tabSheet;
     
-    @Named("invoicesesTable.remove")
-    private RemoveAction invoicesesTableRemove;
+    @Named("invoicesTable.remove")
+    private RemoveAction invoicesTableRemove;
     
     @Inject
     private DataSupplier dataSupplier;
@@ -67,26 +67,26 @@ public class InvoicesBrowse extends AbstractLookup {
 
     @Override
     public void init(Map<String, Object> params) {
-        invoicesesDs.addItemChangeListener(e -> {
+        invoicesDs.addItemChangeListener(e -> {
             if (e.getItem() != null) {
-                Invoices reloadedItem = dataSupplier.reload(e.getDs().getItem(), invoicesDs.getView());
-                invoicesDs.setItem(reloadedItem);
+                Invoices reloadedItem = dataSupplier.reload(e.getDs().getItem(), invoiceDs.getView());
+                invoiceDs.setItem(reloadedItem);
             }
         });
         
-        invoicesesTable.addAction(new CreateAction(invoicesesTable) {
+        invoicesTable.addAction(new CreateAction(invoicesTable) {
             @Override
             protected void internalOpenEditor(CollectionDatasource datasource, Entity newItem, Datasource parentDs, Map<String, Object> params) {
-                invoicesesTable.setSelected(Collections.emptyList());
-                invoicesDs.setItem((Invoices) newItem);
+                invoicesTable.setSelected(Collections.emptyList());
+                invoiceDs.setItem((Invoices) newItem);
                 enableEditControls(true);
             }
         });
 
-        invoicesesTable.addAction(new EditAction(invoicesesTable) {
+        invoicesTable.addAction(new EditAction(invoicesTable) {
             @Override
             protected void internalOpenEditor(CollectionDatasource datasource, Entity existingItem, Datasource parentDs, Map<String, Object> params) {
-                if (invoicesesTable.getSelected().size() == 1) {
+                if (invoicesTable.getSelected().size() == 1) {
                     enableEditControls(false);
                 }
             }
@@ -96,7 +96,7 @@ public class InvoicesBrowse extends AbstractLookup {
          * Handles the {@link Invoices} instance removal from the table. If the selected item is removed, removes the
          * selection from the table
          */
-        invoicesesTableRemove.setAfterRemoveHandler(removedItems -> invoicesDs.setItem(null));
+        invoicesTableRemove.setAfterRemoveHandler(removedItems -> invoiceDs.setItem(null));
         
         disableEditControls();
     }
@@ -104,24 +104,24 @@ public class InvoicesBrowse extends AbstractLookup {
     public void save() {
         getDsContext().commit();
 
-        Invoices editedItem = invoicesDs.getItem();
+        Invoices editedItem = invoiceDs.getItem();
         if (creating) {
-            invoicesesDs.includeItem(editedItem);
+            invoicesDs.includeItem(editedItem);
         } else {
-            invoicesesDs.updateItem(editedItem);
+            invoicesDs.updateItem(editedItem);
         }
-        invoicesesTable.setSelected(editedItem);
+        invoicesTable.setSelected(editedItem);
 
         disableEditControls();
     }
 
     public void cancel() {
-        Invoices selectedItem = invoicesesDs.getItem();
+        Invoices selectedItem = invoicesDs.getItem();
         if (selectedItem != null) {
-            Invoices reloadedItem = dataSupplier.reload(selectedItem, invoicesDs.getView());
-            invoicesesDs.setItem(reloadedItem);
+            Invoices reloadedItem = dataSupplier.reload(selectedItem, invoiceDs.getView());
+            invoicesDs.setItem(reloadedItem);
         } else {
-            invoicesDs.setItem(null);
+            invoiceDs.setItem(null);
         }
 
         disableEditControls();
@@ -135,7 +135,7 @@ public class InvoicesBrowse extends AbstractLookup {
 
     private void disableEditControls() {
         initEditComponents(false);
-        invoicesesTable.requestFocus();
+        invoicesTable.requestFocus();
     }
 
     private void initEditComponents(boolean enabled) {

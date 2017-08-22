@@ -42,10 +42,10 @@ import java.util.Map;
 
 public class ProductBrowse extends AbstractLookup {
 
-    private static final String IMAGE_CELL_HEIGHT = "150px";
+    private static final String IMAGE_CELL_HEIGHT = "70px";
 
     @Inject
-    private CollectionDatasource<Product, IdProxy> productsDs;
+    private CollectionDatasource<Product, IdProxy<Long>> productsDs;
 
     @Inject
     private Datasource<Product> productDs;
@@ -63,19 +63,22 @@ public class ProductBrowse extends AbstractLookup {
     private FieldGroup fieldGroup;
 
     @Inject
+    private Image productImage;
+
+    @Inject
     private TabSheet tabSheet;
 
     @Named("productsTable.remove")
     private RemoveAction productsTableRemove;
 
     @Inject
+    private Table<Product> relatedProductsTable;
+
+    @Inject
     private DataSupplier dataSupplier;
 
     @Inject
     private ComponentsFactory componentsFactory;
-
-    @Inject
-    private Embedded productImage;
 
     @Inject
     private FileUploadField imageUpload;
@@ -92,12 +95,7 @@ public class ProductBrowse extends AbstractLookup {
             if (e.getItem() != null) {
                 Product reloadedItem = dataSupplier.reload(e.getDs().getItem(), productDs.getView());
                 productDs.setItem(reloadedItem);
-                /**
-                 * update image in the {@link ProductBrowse#productImage} component if selected {@link Product} is changed
-                 */
-                generateImage(productDs.getItem(), null, productImage);
-            } else {
-                productImage.resetSource();
+                productImage.setVisible(reloadedItem.getProductImage() != null);
             }
         });
 
@@ -107,7 +105,6 @@ public class ProductBrowse extends AbstractLookup {
                 productsTable.setSelected(Collections.emptyList());
                 productDs.setItem((Product) newItem);
                 enableEditControls(true);
-                productImage.resetSource();
             }
         });
 
@@ -128,7 +125,6 @@ public class ProductBrowse extends AbstractLookup {
             if (product != null && imageUpload.getFileContent() != null) {
                 try {
                     product.setProductImage(IOUtils.toByteArray(imageUpload.getFileContent()));
-                    generateImage(product, null, productImage);
                 } catch (IOException e) {
                     log.error("Error happened while converting content of upload filed to byte array", e);
                     showNotification(getMessage("fileUploadErrorMessage"), NotificationType.ERROR);
@@ -148,7 +144,6 @@ public class ProductBrowse extends AbstractLookup {
                             new DialogAction(DialogAction.Type.YES, Action.Status.PRIMARY) {
                                 public void actionPerform(Component component) {
                                     productDs.getItem().setProductImage(null);
-                                    productImage.resetSource();
                                 }
                             },
                             new DialogAction(DialogAction.Type.NO, Action.Status.NORMAL)
@@ -157,10 +152,16 @@ public class ProductBrowse extends AbstractLookup {
 
         productsTableRemove.setAfterRemoveHandler(removedItems -> productDs.setItem(null));
 
-        /**
-         * Hides the default image when screen is just opened
-         */
-        productImage.resetSource();
+        relatedProductsTable.addGeneratedColumn("productImage", entity -> {
+            if (entity.getProductImage() != null) {
+                Image image = componentsFactory.createComponent(Image.class);
+                image.setDatasource(relatedProductsTable.getItemDatasource(entity), "productImage");
+                image.setScaleMode(Image.ScaleMode.FILL);
+                image.setHeight(IMAGE_CELL_HEIGHT);
+                return image;
+            }
+            return null;
+        });
 
         disableEditControls();
     }
@@ -184,14 +185,8 @@ public class ProductBrowse extends AbstractLookup {
         if (selectedItem != null) {
             Product reloadedItem = dataSupplier.reload(selectedItem, productDs.getView());
             productsDs.setItem(reloadedItem);
-            /**
-             * regenerate {@link productImage} when cancelling edit action
-             */
-            generateImage(reloadedItem, null, productImage);
-
         } else {
             productDs.setItem(null);
-            productImage.resetSource();
         }
 
         disableEditControls();
@@ -223,44 +218,5 @@ public class ProductBrowse extends AbstractLookup {
          * Enabling/disabling file upload control, depending if the screen is in editing mode or not
          */
         imageUpload.setVisible(enabled);
-    }
-
-    /**
-     * Method is used in the screen descriptor for generating component
-     * in the productImage column of the relatedProductsTable
-     *
-     * @param entity Instance that is represented in the row
-     * @return The {@link Component} instance to be placed in the cell
-     */
-    public Component generateProductImageCell(Product entity) {
-        return generateImage(entity, IMAGE_CELL_HEIGHT, null);
-    }
-
-    /**
-     * Generates or updates visual representation for {@link Product#productImage}
-     *
-     * @param product Instance of the {@link Product} entity, which image should be displayed
-     * @param height Is set to the returned {@link Embedded} instance if not null
-     * @param displayComponent Existing {@link Embedded} component, used to display an image
-     *                         <p/>If null - method will return a newly created instance
-     * @return The {@link Embedded} instance that shows image, stored as array of bytes in {@link Product#productImage}
-     */
-    @Nullable
-    private Embedded generateImage(Product product, String height, Embedded displayComponent) {
-        if (product == null || product.getProductImage() == null) {
-            if (displayComponent != null)
-                displayComponent.resetSource();
-            return null;
-        }
-
-        Embedded embedded = displayComponent;
-        if (embedded == null)
-            embedded = (Embedded) componentsFactory.createComponent(Embedded.NAME);
-
-        embedded.setSource("productImage-" + UuidProvider.createUuid(), new ByteArrayInputStream(product.getProductImage()));
-        if (height != null)
-            embedded.setHeight(height);
-
-        return embedded;
     }
 }

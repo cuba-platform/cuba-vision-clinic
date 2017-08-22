@@ -17,11 +17,11 @@
 <window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
         caption="msg://editCaption"
         class="com.company.cubavisionclinic.web.patients.PatientsEdit"
-        datasource="patientsDs"
+        datasource="patientDs"
         focusComponent="fieldGroup"
         messagesPack="com.company.cubavisionclinic.web.patients">
     <dsContext>
-        <datasource id="patientsDs"
+        <datasource id="patientDs"
                     class="com.company.cubavisionclinic.entity.Patients"
                     view="_local"/>
     </dsContext>
@@ -30,22 +30,22 @@
     <layout expand="windowActions"
             spacing="true">
         <fieldGroup id="fieldGroup"
-                    datasource="patientsDs">
+                    datasource="patientDs">
             <column width="250px">
-                <field id="name"/>
-                <field id="street"/>
-                <field id="street2"/>
-                <field id="city"/>
-                <field id="state"/>
-                <field id="zip"/>
-                <field id="primaryPhone"
+                <field property="name"/>
+                <field property="street"/>
+                <field property="street2"/>
+                <field property="city"/>
+                <field property="state"/>
+                <field property="zip"/>
+                <field property="primaryPhone"
                        mask="(###) ###-####"
                        valueMode="masked"/>
-                <field id="secondaryPhone"
+                <field property="secondaryPhone"
                        mask="(###) ###-####"
                        valueMode="masked"/>
-                <field id="email"/>
-                <field id="policyNumber"/>
+                <field property="email"/>
+                <field property="policyNumber"/>
             </column>
         </fieldGroup>
         <frame id="windowActions"

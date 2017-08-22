@@ -36,13 +36,13 @@ import com.haulmont.cuba.core.entity.IdProxy;
 public class AppointmentsBrowse extends AbstractLookup {
 
     @Inject
-    private CollectionDatasource<Appointments, IdProxy> appointmentsesDs;
+    private CollectionDatasource<Appointments, IdProxy<Long>> appointmentsDs;
 
     @Inject
-    private Datasource<Appointments> appointmentsDs;
+    private Datasource<Appointments> appointmentDs;
 
     @Inject
-    private Table<Appointments> appointmentsesTable;
+    private Table<Appointments> appointmentsTable;
 
     @Inject
     private BoxLayout lookupBox;
@@ -53,8 +53,8 @@ public class AppointmentsBrowse extends AbstractLookup {
     @Inject
     private FieldGroup fieldGroup;
     
-    @Named("appointmentsesTable.remove")
-    private RemoveAction appointmentsesTableRemove;
+    @Named("appointmentsTable.remove")
+    private RemoveAction appointmentsTableRemove;
     
     @Inject
     private DataSupplier dataSupplier;
@@ -63,32 +63,32 @@ public class AppointmentsBrowse extends AbstractLookup {
 
     @Override
     public void init(Map<String, Object> params) {
-        appointmentsesDs.addItemChangeListener(e -> {
+        appointmentsDs.addItemChangeListener(e -> {
             if (e.getItem() != null) {
-                Appointments reloadedItem = dataSupplier.reload(e.getDs().getItem(), appointmentsDs.getView());
-                appointmentsDs.setItem(reloadedItem);
+                Appointments reloadedItem = dataSupplier.reload(e.getDs().getItem(), appointmentDs.getView());
+                appointmentDs.setItem(reloadedItem);
             }
         });
         
-        appointmentsesTable.addAction(new CreateAction(appointmentsesTable) {
+        appointmentsTable.addAction(new CreateAction(appointmentsTable) {
             @Override
             protected void internalOpenEditor(CollectionDatasource datasource, Entity newItem, Datasource parentDs, Map<String, Object> params) {
-                appointmentsesTable.setSelected(Collections.emptyList());
-                appointmentsDs.setItem((Appointments) newItem);
+                appointmentsTable.setSelected(Collections.emptyList());
+                appointmentDs.setItem((Appointments) newItem);
                 enableEditControls(true);
             }
         });
 
-        appointmentsesTable.addAction(new EditAction(appointmentsesTable) {
+        appointmentsTable.addAction(new EditAction(appointmentsTable) {
             @Override
             protected void internalOpenEditor(CollectionDatasource datasource, Entity existingItem, Datasource parentDs, Map<String, Object> params) {
-                if (appointmentsesTable.getSelected().size() == 1) {
+                if (appointmentsTable.getSelected().size() == 1) {
                     enableEditControls(false);
                 }
             }
         });
         
-        appointmentsesTableRemove.setAfterRemoveHandler(removedItems -> appointmentsDs.setItem(null));
+        appointmentsTableRemove.setAfterRemoveHandler(removedItems -> appointmentDs.setItem(null));
         
         disableEditControls();
     }
@@ -96,24 +96,24 @@ public class AppointmentsBrowse extends AbstractLookup {
     public void save() {
         getDsContext().commit();
 
-        Appointments editedItem = appointmentsDs.getItem();
+        Appointments editedItem = appointmentDs.getItem();
         if (creating) {
-            appointmentsesDs.includeItem(editedItem);
+            appointmentsDs.includeItem(editedItem);
         } else {
-            appointmentsesDs.updateItem(editedItem);
+            appointmentsDs.updateItem(editedItem);
         }
-        appointmentsesTable.setSelected(editedItem);
+        appointmentsTable.setSelected(editedItem);
 
         disableEditControls();
     }
 
     public void cancel() {
-        Appointments selectedItem = appointmentsesDs.getItem();
+        Appointments selectedItem = appointmentsDs.getItem();
         if (selectedItem != null) {
-            Appointments reloadedItem = dataSupplier.reload(selectedItem, appointmentsDs.getView());
-            appointmentsesDs.setItem(reloadedItem);
+            Appointments reloadedItem = dataSupplier.reload(selectedItem, appointmentDs.getView());
+            appointmentsDs.setItem(reloadedItem);
         } else {
-            appointmentsDs.setItem(null);
+            appointmentDs.setItem(null);
         }
 
         disableEditControls();
@@ -127,7 +127,7 @@ public class AppointmentsBrowse extends AbstractLookup {
 
     private void disableEditControls() {
         initEditComponents(false);
-        appointmentsesTable.requestFocus();
+        appointmentsTable.requestFocus();
     }
 
     private void initEditComponents(boolean enabled) {

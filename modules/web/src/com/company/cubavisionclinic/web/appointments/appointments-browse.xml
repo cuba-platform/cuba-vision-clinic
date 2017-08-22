@@ -18,14 +18,14 @@
 <window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
         caption="msg://browseCaption"
         class="com.company.cubavisionclinic.web.appointments.AppointmentsBrowse"
-        focusComponent="appointmentsesTable"
-        lookupComponent="appointmentsesTable"
+        focusComponent="appointmentsTable"
+        lookupComponent="appointmentsTable"
         messagesPack="com.company.cubavisionclinic.web.appointments">
     <dsContext>
-        <datasource id="appointmentsDs"
+        <datasource id="appointmentDs"
                     class="com.company.cubavisionclinic.entity.Appointments"
                     view="Appointments-screen-view"/>
-        <collectionDatasource id="appointmentsesDs"
+        <collectionDatasource id="appointmentsDs"
                               class="com.company.cubavisionclinic.entity.Appointments"
                               view="Appointments-screen-view">
             <query>
@@ -53,16 +53,16 @@
                reversePosition="true"
                width="100%">
             <vbox id="lookupBox"
-                  expand="appointmentsesTable"
+                  expand="appointmentsTable"
                   height="100%"
                   margin="false,true,false,false"
                   spacing="true">
                 <filter id="filter"
-                        applyTo="appointmentsesTable"
-                        datasource="appointmentsesDs">
+                        applyTo="appointmentsTable"
+                        datasource="appointmentsDs">
                     <properties include=".*"/>
                 </filter>
-                <table id="appointmentsesTable"
+                <table id="appointmentsTable"
                        width="100%">
                     <actions>
                         <action id="create"/>
@@ -77,16 +77,16 @@
                                 maxTextLength="50"/>
                         <column id="appointmentPatient"/>
                     </columns>
-                    <rows datasource="appointmentsesDs"/>
+                    <rows datasource="appointmentsDs"/>
                     <rowsCount/>
                     <buttonsPanel id="buttonsPanel"
                                   alwaysVisible="true">
                         <button id="createBtn"
-                                action="appointmentsesTable.create"/>
+                                action="appointmentsTable.create"/>
                         <button id="editBtn"
-                                action="appointmentsesTable.edit"/>
+                                action="appointmentsTable.edit"/>
                         <button id="removeBtn"
-                                action="appointmentsesTable.remove"/>
+                                action="appointmentsTable.remove"/>
                     </buttonsPanel>
                 </table>
             </vbox>
@@ -97,13 +97,13 @@
                   spacing="true">
                 <vbox id="fieldGroupBox">
                     <fieldGroup id="fieldGroup"
-                                datasource="appointmentsDs">
+                                datasource="appointmentDs">
                         <column width="250px">
-                            <field id="appointmentPatient"/>
-                            <field id="appointmentTime"/>
-                            <field id="appointmentDate"/>
-                            <field id="appointmentType"/>
-                            <field id="doctorNotes"
+                            <field property="appointmentPatient"/>
+                            <field property="appointmentTime"/>
+                            <field property="appointmentDate"/>
+                            <field property="appointmentType"/>
+                            <field property="doctorNotes"
                                    rows="5"/>
                         </column>
                     </fieldGroup>

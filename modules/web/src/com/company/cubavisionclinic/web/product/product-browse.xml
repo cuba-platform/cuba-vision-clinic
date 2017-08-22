@@ -116,19 +116,23 @@ where :ds$productDs.category = e.category and :ds$productDs.id <> e.id]]>
                                 <fieldGroup id="fieldGroup"
                                             datasource="productDs">
                                     <column width="250px">
-                                        <field id="productName"/>
-                                        <field id="msrp"
+                                        <field property="productName"/>
+                                        <field property="msrp"
                                                caption="msg://msrp"/>
-                                        <field id="description"
+                                        <field property="description"
                                                rows="5"/>
-                                        <field id="category"/>
-                                        <field id="currentPrice"/>
+                                        <field property="category"/>
+                                        <field property="currentPrice"/>
                                     </column>
                                 </fieldGroup>
                                 <vbox spacing="true">
-                                    <embedded id="productImage"
-                                              align="MIDDLE_CENTER"
-                                              height="250px"/>
+                                    <image id="productImage"
+                                           datasource="productDs"
+                                           property="productImage"
+                                           align="MIDDLE_CENTER"
+                                           height="250px"
+                                           scaleMode="FILL"
+                                           visible="false"/>
                                     <upload id="imageUpload"
                                             accept="*.jpg,*.png"
                                             align="MIDDLE_CENTER"
@@ -146,11 +150,11 @@ where :ds$productDs.category = e.category and :ds$productDs.id <> e.id]]>
                                         <column id="productName"/>
                                         <column id="msrp"
                                                 caption="msg://msrp">
-                                            <formatter class="com.company.cubavisionclinic.web.formatters.CurrencyFormatter"/>
+                                            <formatter
+                                                    class="com.company.cubavisionclinic.web.formatters.CurrencyFormatter"/>
                                         </column>
                                         <column id="description"/>
-                                        <column id="productImage"
-                                                generator="generateProductImageCell"/>
+                                        <column id="productImage"/>
                                         <column id="category"/>
                                     </columns>
                                     <rows datasource="relatedProductsDs"/>
