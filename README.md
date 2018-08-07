@@ -10,3 +10,6 @@ Migration is done automatically by the reverse-engineering functionality, provid
 Find technical aspects of how to launch the application [here](https://github.com/cuba-platform/cuba-vision-clinic/wiki).
 
 Based on CUBA Platform 6.6.2
+
+## Issues
+Please use https://www.cuba-platform.com/discuss for discussion, support, and reporting problems coressponding to this sample.
